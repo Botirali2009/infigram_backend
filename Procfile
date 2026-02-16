@@ -1,0 +1,1 @@
+web: gunicorn infigram_backend.wsgi --log-file -
