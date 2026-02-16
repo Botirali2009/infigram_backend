@@ -36,8 +36,8 @@ class Message(models.Model):
     text = models.TextField(blank=True, verbose_name="Matn")
 
     # File info
-    file_id = models.CharField(max_length=255, blank=True, verbose_name="File ID")
-    file_path = models.CharField(max_length=500, blank=True, verbose_name="File path")
+    file_id = models.CharField(max_length=255, null=True, blank=True, verbose_name="File ID")
+    file_path = models.CharField(max_length=500, null=True, blank=True, verbose_name="File path")
     file_size = models.BigIntegerField(blank=True, null=True, verbose_name="File hajmi")
 
     # Reply/Forward info
