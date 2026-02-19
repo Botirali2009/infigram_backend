@@ -32,42 +32,60 @@ class BotListCreateView(generics.ListCreateAPIView):
         name = serializer.validated_data['name']
         description = serializer.validated_data.get('description', '')
 
-        # Telegram Bot API dan bot ma'lumotlarini olish
-        try:
-            response = requests.get(f'https://api.telegram.org/bot{token}/getMe')
-            data = response.json()
+        # # Telegram Bot API dan bot ma'lumotlarini olish
+        # try:
+        #     response = requests.get(f'https://api.telegram.org/bot{token}/getMe')
+        #     data = response.json()
+        #
+        #     if not data['ok']:
+        #         return Response({
+        #             'error': 'Noto\'g\'ri bot token!'
+        #         }, status=status.HTTP_400_BAD_REQUEST)
+        #
+        #     bot_info = data['result']
+        #
+        #     # Bot yaratish
+        #     bot = Bot.objects.create(
+        #         owner=request.user,
+        #         name=name,
+        #         username=bot_info['username'],
+        #         bot_id=bot_info['id'],
+        #         description=description
+        #     )
+        #     bot.encrypt_token(token)
+        #     bot.save()
+        #
+        #     # User statistikasini yangilash
+        #     request.user.total_bots += 1
+        #     request.user.save()
+        #
+        #     return Response(
+        #         BotSerializer(bot).data,
+        #         status=status.HTTP_201_CREATED
+        #     )
+        #
+        # except Exception as e:
+        #     return Response({
+        #         'error': str(e)
+        #     }, status=status.HTTP_400_BAD_REQUEST)
 
-            if not data['ok']:
-                return Response({
-                    'error': 'Noto\'g\'ri bot token!'
-                }, status=status.HTTP_400_BAD_REQUEST)
+        bot = Bot.objects.create(
+            owner=request.user,
+            name=name,
+            username="temp_bot",
+            bot_id=0,
+            description=description
+        )
+        bot.encrypt_token(token)
+        bot.save()
 
-            bot_info = data['result']
+        request.user.total_bots += 1
+        request.user.save()
 
-            # Bot yaratish
-            bot = Bot.objects.create(
-                owner=request.user,
-                name=name,
-                username=bot_info['username'],
-                bot_id=bot_info['id'],
-                description=description
-            )
-            bot.encrypt_token(token)
-            bot.save()
-
-            # User statistikasini yangilash
-            request.user.total_bots += 1
-            request.user.save()
-
-            return Response(
-                BotSerializer(bot).data,
-                status=status.HTTP_201_CREATED
-            )
-
-        except Exception as e:
-            return Response({
-                'error': str(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            BotSerializer(bot).data,
+            status=status.HTTP_201_CREATED
+        )
 
 
 class BotDetailView(generics.RetrieveUpdateDestroyAPIView):
